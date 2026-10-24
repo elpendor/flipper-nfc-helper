@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flipper NFC Helper</title>
+  <meta name="description" content="Make NFC tags for Flipper Zero from your phone. Works offline.">
+  <meta name="theme-color" content="#ff8200">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="NFC Helper">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Flipper NFC Helper</h1>
+      <p class="sub">Make a tag here, then emulate it on your Flipper.</p>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-kind="url" aria-selected="true">Link</button>
+      <button role="tab" data-kind="text">Text</button>
+      <button role="tab" data-kind="wifi">Wi-Fi</button>
+      <button role="tab" data-kind="contact">Contact</button>
+    </nav>
+
+    <form id="form" autocomplete="off" novalidate>
+      <fieldset data-kind="url">
+        <label>Link
+          <input name="url" type="url" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="example.com">
+        </label>
+        <div class="chips" id="chips">
+          <button type="button" data-insert="https://">https://</button>
+          <button type="button" data-insert="www.">www.</button>
+          <button type="button" data-insert=".com">.com</button>
+          <button type="button" data-insert=".org">.org</button>
+          <button type="button" data-insert=".net">.net</button>
+          <button type="button" data-insert="/">/</button>
+          <button type="button" id="paste">Paste</button>
+        </div>
+      </fieldset>
+
+      <fieldset data-kind="text" hidden>
+        <label>Text
+          <textarea name="text" rows="3" placeholder="Hello from my Flipper"></textarea>
+        </label>
+        <p class="hint">Android phones show text tags. iPhones ignore them.</p>
+      </fieldset>
+
+      <fieldset data-kind="wifi" hidden>
+        <label>Network name (SSID)
+          <input name="ssid" autocapitalize="off" spellcheck="false">
+        </label>
+        <label>Password
+          <input name="password" autocapitalize="off" spellcheck="false">
+        </label>
+        <label>Security
+          <select name="security">
+            <option value="wpa2">WPA2</option>
+            <option value="wpa">WPA/WPA2</option>
+            <option value="open">None (open)</option>
+          </select>
+        </label>
+        <p class="hint">Android phones can join from a Wi-Fi tag. iPhones ignore them.</p>
+      </fieldset>
+
+      <fieldset data-kind="contact" hidden>
+        <label>Name <input name="name" autocomplete="name"></label>
+        <label>Phone <input name="phone" type="tel" autocomplete="tel"></label>
+        <label>Email <input name="email" type="email" autocapitalize="off" autocomplete="email"></label>
+        <label>Company <input name="org" autocomplete="organization"></label>
+        <label>Website <input name="website" type="url" inputmode="url" autocapitalize="off"></label>
+        <p class="hint">Android phones offer to save the contact. iPhones ignore contact tags.</p>
+      </fieldset>
+
+      <label>Tag name on Flipper
+        <input name="tagName" autocapitalize="off" spellcheck="false" placeholder="Auto">
+      </label>
+
+      <p class="meter" id="meter" aria-live="polite"></p>
+    </form>
+
+    <section class="actions">
+      <a id="send" class="btn primary" aria-disabled="true">Send to Flipper app</a>
+      <p class="hint">Opens the Flipper app: <b>Save</b>, then <b>Emulate</b>.</p>
+      <div id="writeBox" class="actions" hidden>
+        <p class="or">or</p>
+        <button id="write" class="btn" type="button">Write to Flipper over NFC</button>
+        <ol class="steps">
+          <li>On the Flipper, emulate an NTAG215 (<b>NFC → Saved</b>, or <b>Add Manually</b>).</li>
+          <li>Tap the button and hold your phone to the Flipper's back.</li>
+          <li>Press <b>Back</b> on the Flipper to keep it.</li>
+        </ol>
+      </div>
+      <div class="row">
+        <button id="save" class="btn small" type="button">Save</button>
+        <button id="copy" class="btn small" type="button">Copy link</button>
+        <button id="download" class="btn small" type="button">Download .nfc</button>
+      </div>
+    </section>
+
+    <section id="savedSection" hidden>
+      <h2>Saved</h2>
+      <ul id="saved" class="saved"></ul>
+    </section>
+
+    <details class="help">
+      <summary>How it works</summary>
+      <ol>
+        <li>Install the free <b>Flipper Mobile App</b> and pair it with your Flipper over Bluetooth (once).</li>
+        <li>Fill in the form and tap <b>Send to Flipper app</b>.</li>
+        <li>In the Flipper app, tap <b>Save</b>, then <b>Emulate</b>.</li>
+        <li>Tap any phone to the back of the Flipper.</li>
+      </ol>
+      <p>In Chrome on Android you can also skip the Flipper app: <b>Write to Flipper over NFC</b> writes straight to a Flipper that is emulating a tag.</p>
+      <p>Nothing you type leaves your phone. The tag data travels in the part of the link after <code>#</code>, which browsers never send to a server.</p>
+    </details>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
