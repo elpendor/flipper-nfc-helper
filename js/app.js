@@ -27,7 +27,9 @@ function validate(k, d) {
   if (k === 'text') return d.text ? null : 'Enter some text';
   if (k === 'wifi') {
     if (!d.ssid) return 'Enter the network name';
-    if (d.security !== 'open' && d.password.length < 8) return 'Wi-Fi passwords are at least 8 characters';
+    if (d.security === 'open') return null;
+    if (!d.password) return 'Enter the password';
+    if (d.password.length < 8) return 'Wi-Fi passwords are at least 8 characters';
     return null;
   }
   return d.name || d.phone || d.email ? null : 'Enter a name, phone or email';
@@ -74,7 +76,8 @@ function update() {
   const result = build(kind, readData(), form.elements.tagName.value);
   const typed = [...fieldsOf(kind)].some((el) => el.tagName !== 'SELECT' && el.value);
   current = result.error ? null : result;
-  meter.classList.toggle('error', !current && typed);
+  // "Enter …" prompts for a missing field stay muted; only real problems turn red.
+  meter.classList.toggle('error', !current && typed && !result.error.startsWith('Enter'));
   meter.textContent = current
     ? `${current.name}.nfc · ${current.type.name} · ${current.bytes} of ${current.type.cc * 8} bytes`
     : typed ? result.error : '';
@@ -85,12 +88,17 @@ function update() {
 }
 
 let toastTimer;
-function toast(msg) {
+function toast(msg, undo) {
   const t = $('toast');
-  t.textContent = msg;
+  t.replaceChildren(msg);
+  if (undo) {
+    const b = el('button', { type: 'button', textContent: 'Undo' });
+    b.onclick = () => { undo(); t.classList.remove('show'); };
+    t.append(b);
+  }
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  toastTimer = setTimeout(() => t.classList.remove('show'), undo ? 5000 : 2600);
 }
 
 const STORE = 'flipper-nfc-helper.saved';
@@ -124,8 +132,16 @@ function renderSaved() {
     const del = el('button', { className: 'del', type: 'button', textContent: 'Delete' });
     del.setAttribute('aria-label', `Delete ${item.name}`);
     del.onclick = () => {
-      storeSaved(loadSaved().filter((s) => s.name !== item.name));
+      const list = loadSaved();
+      const i = list.findIndex((s) => s.name === item.name);
+      storeSaved(list.filter((s) => s.name !== item.name));
       renderSaved();
+      toast(`Deleted ${item.name}`, () => {
+        const now = loadSaved().filter((s) => s.name !== item.name);
+        now.splice(i, 0, item);
+        storeSaved(now);
+        renderSaved();
+      });
     };
     const li = el('li');
     li.append(info);

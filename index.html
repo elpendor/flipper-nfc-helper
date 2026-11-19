@@ -36,13 +36,11 @@
           <input name="url" type="url" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="example.com">
         </label>
         <div class="chips" id="chips">
-          <button type="button" data-insert="https://">https://</button>
-          <button type="button" data-insert="www.">www.</button>
+          <button type="button" id="paste">Paste</button>
           <button type="button" data-insert=".com">.com</button>
           <button type="button" data-insert=".org">.org</button>
           <button type="button" data-insert=".net">.net</button>
           <button type="button" data-insert="/">/</button>
-          <button type="button" id="paste">Paste</button>
         </div>
       </fieldset>
 
@@ -101,12 +99,13 @@
       <div class="row">
         <button id="save" class="btn small" type="button">Save</button>
         <button id="copy" class="btn small" type="button">Copy link</button>
-        <button id="download" class="btn small" type="button">Download .nfc</button>
       </div>
+      <button id="download" class="link" type="button">Download .nfc file</button>
     </section>
 
     <section id="savedSection" hidden>
       <h2>Saved</h2>
+      <p class="hint">Tap one to edit.</p>
       <ul id="saved" class="saved"></ul>
     </section>
 
@@ -122,6 +121,11 @@
       <p>Nothing you type leaves your phone. The tag data travels in the part of the link after <code>#</code>, which browsers never send to a server.</p>
     </details>
   </main>
+
+  <aside class="qr">
+    <img src="qr.svg" alt="QR code for this app" width="160" height="160">
+    <p>Open on your phone</p>
+  </aside>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>

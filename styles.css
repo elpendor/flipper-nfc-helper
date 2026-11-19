@@ -7,6 +7,7 @@
   --accent: #ff8200;
   --accent-text: #1c1b19;
   --danger: #c4372b;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: light;
 }
 
@@ -46,7 +47,7 @@ h2 { font-size: 1rem; margin: 28px 0 8px; color: var(--muted); font-weight: 600;
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
   gap: 4px;
   padding: 4px;
   background: var(--surface);
@@ -91,6 +92,7 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+input[name="tagName"] { font-family: var(--mono); }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 16px; }
 
@@ -113,11 +115,24 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); ou
 .steps { font-size: 0.85rem; color: var(--muted); margin: 0 0 4px; padding-left: 20px; }
 .steps li { margin-bottom: 4px; }
 
-.meter { font-size: 0.85rem; color: var(--muted); min-height: 1.2em; margin: 0 0 12px; }
+.meter { font: 0.8rem/1.45 var(--mono); color: var(--muted); min-height: 1.2em; margin: 0 0 12px; overflow-wrap: anywhere; }
 .meter.error { color: var(--danger); }
 
-.actions { display: grid; gap: 8px; }
-.row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+.link {
+  justify-self: center;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link:disabled { opacity: 0.45; }
 
 .btn {
   display: block;
@@ -137,10 +152,11 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); ou
 .btn.small { font-size: 0.85rem; padding: 10px 4px; }
 .btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; pointer-events: none; }
 
-.saved { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.saved { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 
 .saved li {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   background: var(--surface);
@@ -149,8 +165,9 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); ou
   padding: 4px 4px 4px 12px;
 }
 
-.saved .info { flex: 1; min-width: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; padding: 8px 0; }
+.saved .info { flex: 1 1 10rem; min-width: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; padding: 8px 0; }
 .saved .info b, .saved .info span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved .info b { font-family: var(--mono); }
 .saved .info span { font-size: 0.85rem; color: var(--muted); }
 
 .saved a, .saved .del {
@@ -175,15 +192,36 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); ou
   left: 50%;
   bottom: max(24px, env(safe-area-inset-bottom));
   transform: translateX(-50%) translateY(20px);
+  width: max-content;
   max-width: calc(100% - 32px);
   padding: 10px 16px;
   border-radius: 10px;
   background: var(--text);
   color: var(--bg);
   font-size: 0.9rem;
+  overflow-wrap: anywhere;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;
 }
 
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+.toast button {
+  font: inherit;
+  font-weight: 600;
+  margin-left: 12px;
+  padding: 4px 8px;
+  color: var(--accent);
+  background: none;
+  border: 0;
+}
+
+.qr { display: none; }
+
+@media (min-width: 900px) {
+  body { display: flex; justify-content: center; gap: 64px; }
+  main { flex: 1; margin: 0; }
+  .qr { display: block; position: sticky; top: 64px; align-self: flex-start; margin-top: 64px; text-align: center; color: var(--muted); font-size: 0.85rem; }
+  .qr img { display: block; border-radius: 12px; }
+}

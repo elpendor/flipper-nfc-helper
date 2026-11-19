@@ -1,5 +1,5 @@
 // Offline cache for the app shell. Bump VERSION when FILES changes.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const FILES = [
   './',
   'index.html',
@@ -12,6 +12,7 @@ const FILES = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
+  'qr.svg',
 ];
 
 self.addEventListener('install', (e) => {
