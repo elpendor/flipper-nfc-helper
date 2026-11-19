@@ -21,8 +21,15 @@ Not affiliated with Flipper Devices Inc.
 - Link, text, Wi-Fi and contact tags.
 - iPhone and Android. Installable, works offline.
 - Saved tags for one-tap reuse.
+- Share a link to the app (see below).
 - **Write to Flipper over NFC** (Android): no Flipper app needed.
 - Private: no server, no tracking.
+
+## Sharing a link to the app
+
+- **Android:** install the app, then pick **NFC Helper** in any app's share menu.
+- **iPhone:** make a Shortcut that shows in the share sheet, accepts URLs, and opens
+  `https://elpendor.github.io/flipper-nfc-helper/?url=` followed by the shared URL (URL-encoded).
 
 ## Limitations
 

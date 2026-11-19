@@ -237,5 +237,18 @@ if ('NDEFReader' in window && /Android/i.test(navigator.userAgent)) {
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
+// Android share target and ?url= links (iPhone Shortcuts). Many apps share the link inside `text`.
+const params = new URLSearchParams(location.search);
+const sharedText = params.get('text');
+const sharedUrl = params.get('url') || sharedText?.match(/https?:\/\/\S+/)?.[0];
+if (sharedUrl) {
+  setKind('url');
+  form.elements.url.value = sharedUrl;
+} else if (sharedText) {
+  setKind('text');
+  form.elements.text.value = sharedText;
+}
+if (location.search) history.replaceState(null, '', location.pathname);
+
 update();
 renderSaved();
